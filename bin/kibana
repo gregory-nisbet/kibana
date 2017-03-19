@@ -21,4 +21,10 @@ if [ ! -x "$NODE" ]; then
   exit 1
 fi
 
-exec "${NODE}" $NODE_OPTIONS --no-warnings "${DIR}/src/cli" ${@}
+# extract major version from version string: v5.12.0 -> 5
+NODE_MAJOR_VERSION=$("$NODE" --version | cut -d. -f1- | tr -d v)
+if [ "$NODE_MAJOR_VERSION" -ge 6 ]; then
+    NODE_OPTIONS="$NODE_OPTIONS --no-warnings"
+fi
+
+exec "${NODE}" $NODE_OPTIONS "${DIR}/src/cli" "$@"
